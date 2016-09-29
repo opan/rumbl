@@ -1,8 +1,8 @@
-defmodule Rumbl.LobbyChannel do
+defmodule Rumbl.SinorangChannel do
   use Phoenix.Channel
   alias Rumbl.Presence
 
-  def join("lobby:main", _payload, socket) do
+  def join("sinorang:main", _payload, socket) do
     send self(), :after_join
     {:ok, socket}
   end

@@ -1,3 +1,9 @@
+<div class="well">
+  <%= link "Chat Room", to: page_path(@conn, :chat) %>
+  |
+  <%= link "List Users", to: user_path(@conn, :index) %>
+</div>
+
 <div class="jumbotron">
   <h2><%= gettext "Welcome to %{name}", name: "Rumble.io" %></h2>
   <p class="lead">Let's rock!<br /></p>

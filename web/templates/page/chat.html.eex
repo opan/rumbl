@@ -1,3 +1,5 @@
+<%= hidden_input :user, :id, value: @user.id %>
+
 <div class="row">
   <div class="col-md-4">
     <%= link "Main Page", to: page_path(@conn, :index) %>
