@@ -7,7 +7,7 @@ defmodule Rumbl.User do
     field :password, :string, virtual: true
     field :password_hash, :string
     has_many :videos, Rumbl.Video
-    
+
     timestamps
   end
 
@@ -24,6 +24,7 @@ defmodule Rumbl.User do
     model
     |> cast(params, ~w(name username), [])
     |> validate_length(:username, min: 1, max: 20)
+    |> unique_constraint(:username)
   end
 
   defp put_pass_hash(changeset) do
