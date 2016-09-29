@@ -1,0 +1,21 @@
+<div class="row">
+  <div class="col-md-4">
+    <%= link "Main Page", to: page_path(@conn, :index) %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <h3 class="page-header">Messages</h3>
+    <ul id="message_list" class="list-unstyled">
+    </ul>
+    <%= text_input :user, :new_message, placeholder: "Type here and press enter to send", class: "form-control" %>
+  </div>
+
+  <div class="col-md-4">
+    <h3 class="page-header">Online Users</h3>
+    <ul id="user_list" class="list-unstyled">
+      <li>Loading online users...</li>
+    </ul>
+  </div>
+</div>

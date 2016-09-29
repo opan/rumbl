@@ -1,8 +1,11 @@
 defmodule Rumbl.UserSocket do
   use Phoenix.Socket
 
+  alias Rumbl.{User, Repo}
+
   ## Channels
   # channel "room:*", Rumbl.RoomChannel
+  channel "lobby:*", Rumbl.LobbyChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -19,8 +22,9 @@ defmodule Rumbl.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
-    {:ok, socket}
+  def connect(%{"user" => user}, socket) do
+    # user = Repo.get!(User, user_id)
+    {:ok, assign(socket, :user, user)}
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:

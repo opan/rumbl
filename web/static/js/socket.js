@@ -3,9 +3,10 @@
 
 // To use Phoenix channels, the first step is to import Socket
 // and connect at the socket path in "lib/my_app/endpoint.ex":
-import {Socket} from "phoenix"
+import {Socket, Presence} from "phoenix"
 
-let socket = new Socket("/socket", {params: {token: window.userToken}})
+let user = 1
+let socket = new Socket("/socket", {params: {user: "opan"}})
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -54,7 +55,72 @@ let socket = new Socket("/socket", {params: {token: window.userToken}})
 socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("topic:subtopic", {})
+// let channel = socket.channel("topic:subtopic", {})
+// channel.join()
+//   .receive("ok", resp => { console.log("Joined successfully", resp) })
+//   .receive("error", resp => { console.log("Unable to join", resp) })
+
+let presences = {}
+
+let formatTimestamp = (timestamp) => {
+  let date = new Date(timestamp)
+  return date.toLocaleTimeString()
+}
+
+let listBy = (user, {metas: metas}) => {
+  return {
+    user: user,
+    onlineAt: formatTimestamp(metas[0].online_at)
+  }
+}
+
+let userList = document.getElementById('user_list')
+let render = (presences) => {
+  userList.innerHTML = Presence.list(presences, listBy)
+    .map(presence => `
+      <li>
+        ${presence.user}
+        <br>
+        <small>onine since ${presence.onlineAt}</small>
+      </li>
+    `)
+    .join("")
+}
+
+let channel = socket.channel("lobby:main", {});
+let messageInput = document.getElementById('user_new_message')
+messageInput.addEventListener("keypress", (e)=> {
+  if (e.keyCode == 13 && messageInput.value != ""){
+    channel.push("message:new", messageInput.value)
+    messageInput.value = ""
+  }
+})
+
+let messageList = document.getElementById('message_list')
+let renderMessage = (message) => {
+  let messageElement = document.createElement("li")
+  messageElement.innerHTML = `
+    <b>${message.user}</b>
+    <i>${formatTimestamp(message.timestamp)}</i>
+    <p>${message.body}</p>
+  `
+  messageList.appendChild(messageElement)
+  messageList.scrollTop = messageList.scrollHeight
+
+}
+
+channel.on("message:new", message => renderMessage(message))
+
+channel.on("presence_state", state => {
+  presences = Presence.syncState(presences, state)
+  render(presences)
+})
+
+channel.on("presence_diff", diff => {
+  presences = Presence.syncDiff(presences, diff)
+  render(presences)
+})
+
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
