@@ -3,19 +3,19 @@ defmodule Rumbl.SinorangChannel do
   alias Rumbl.{Presence, Chatting, Repo}
 
   def join("sinorang:" <> room_id, %{"token" => token}, socket) do
-    IO.puts List.duplicate("*", 100) |> Enum.join
-    # IO.puts "ini di SinorangChannel"
-    # IO.inspect token
-    IO.inspect socket.id
-    IO.inspect room_id
-    IO.puts List.duplicate("*", 100) |> Enum.join
+    # IO.puts List.duplicate("*", 100) |> Enum.join
+    # # IO.puts "ini di SinorangChannel"
+    # # IO.inspect token
+    # IO.inspect socket.id
+    # IO.inspect room_id
+    # IO.puts List.duplicate("*", 100) |> Enum.join
 
     case Phoenix.Token.verify(socket, "user", token, max_age: 1209600) do
       {:ok, user_id} ->
         send self(), :after_join
         {:ok, socket}
       {:error, _} ->
-        {:error, %{reason: "user not found"}}
+        :error
     end
   end
 

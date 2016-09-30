@@ -20,7 +20,7 @@ defmodule Rumbl.Router do
     get "/", PageController, :index
     get "/chat/:room_id", PageController, :chat
     get "/rooms", PageController, :rooms
-    resources "/users", UserController, only: [:index, :new, :create, :show]
+    resources "/users", UserController, only: [:index, :new, :create, :show, :delete]
     resources "/sessions", SessionController, only: [:new, :create, :delete]
     resources "/videos", VideoController
   end

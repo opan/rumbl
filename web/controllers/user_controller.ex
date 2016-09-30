@@ -31,7 +31,15 @@ defmodule Rumbl.UserController do
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
+  end
 
+  def delete(conn, %{"id" => id}) do
+    user = Repo.get!(User, id)
 
+    Repo.delete!(user)
+
+    conn
+    |> put_flash(:info, "#{user.name} successfully destroyed")
+    |> redirect(to: user_path(conn, :index))
   end
 end

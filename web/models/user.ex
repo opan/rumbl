@@ -6,8 +6,9 @@ defmodule Rumbl.User do
     field :username, :string
     field :password, :string, virtual: true
     field :password_hash, :string
-    has_many :videos, Rumbl.Video
-    has_many :chattings, Rumbl.Chatting
+    has_many :videos, Rumbl.Video, on_delete: :delete_all
+    has_many :chattings, Rumbl.Chatting, on_delete: :delete_all
+    many_to_many :chatting_rooms, Rumbl.ChattingRoom, join_through: "chatting_room_users"
 
     timestamps
   end
@@ -26,7 +27,6 @@ defmodule Rumbl.User do
     |> cast(params, ~w(name username), [])
     |> validate_length(:username, min: 1, max: 20)
     |> unique_constraint(:username)
-    |> assoc_constraint(:videos)
   end
 
   defp put_pass_hash(changeset) do

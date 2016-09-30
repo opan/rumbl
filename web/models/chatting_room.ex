@@ -4,6 +4,7 @@ defmodule Rumbl.ChattingRoom do
   schema "chatting_rooms" do
     field :name, :string
     has_many :chattings, Rumbl.Chatting
+    many_to_many :users, Rumbl.User, join_through: "chatting_room_users"
 
     timestamps()
   end

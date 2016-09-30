@@ -1,10 +1,9 @@
-defmodule Rumbl.Chatting do
+defmodule Rumbl.ChattingRoomUser do
   use Rumbl.Web, :model
 
-  schema "chattings" do
-    field :message, :string
-    belongs_to :chatting_room, Rumbl.ChattingRoom
+  schema "chatting_room_users" do
     belongs_to :user, Rumbl.User
+    belongs_to :chatting_room, Rumbl.ChattingRoom
 
     timestamps()
   end
@@ -14,10 +13,9 @@ defmodule Rumbl.Chatting do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:message])
-    |> validate_required([:message])
+    |> cast(params, [])
+    |> validate_required([:user_id, :chatting_room_id])
     |> assoc_constraint(:user)
     |> assoc_constraint(:chatting_room)
-    |> foreign_key_constraint(:chatting_user_id)
   end
 end

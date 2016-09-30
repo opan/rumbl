@@ -36,10 +36,10 @@ defmodule Rumbl.UserSocket do
           if user do
             {:ok, socket |> assign(:user, user) |> assign(:room, room)}
           else
-            {:error, %{reason: "user not found"}}
+            :error
           end
         else
-          {:error, %{reason: "room not found"}}
+          :error
         end
 
       {:error, _} ->
