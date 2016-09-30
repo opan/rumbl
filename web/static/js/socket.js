@@ -137,6 +137,7 @@ let mainFunction = ()=> {
     .receive("error", resp => { console.log("Unable to join", resp) })
 }
 
+// Run socket only if userId exists
 if (userId){
   mainFunction()
 }
