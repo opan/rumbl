@@ -6,16 +6,19 @@
 import {Socket, Presence} from "phoenix"
 
 
-let userId = document.getElementById('user_id')
+let userToken = document.getElementById('user_id')
+let roomID = document.getElementById('room_id')
 
-if (userId) {
-  userId = userId.value
+if (userToken) {
+  userToken = userToken.value
+  roomID = roomID.value
 } else {
-  userId = null
+  userToken = null
+  roomID = null
 }
 
 // let socket = new Socket("/socket", {params: {user: "opan"}})
-let socket = new Socket("/socket", {params: {user_id: userId}})
+let socket = new Socket("/socket", {params: {token: userToken, room_id: roomID}})
 
 let mainFunction = ()=> {
 
@@ -137,8 +140,8 @@ let mainFunction = ()=> {
     .receive("error", resp => { console.log("Unable to join", resp) })
 }
 
-// Run socket only if userId exists
-if (userId){
+// Run socket only if userToken exists
+if (userToken){
   mainFunction()
 }
 

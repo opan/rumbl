@@ -1,7 +1,7 @@
 defmodule Rumbl.UserSocket do
   use Phoenix.Socket
 
-  alias Rumbl.{User, Repo}
+  alias Rumbl.{User, Repo, ChattingRoom}
 
   ## Channels
   # channel "room:*", Rumbl.RoomChannel
@@ -22,13 +22,38 @@ defmodule Rumbl.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(%{"user_id" => user_id}, socket) do
-    user = Repo.get(User, user_id)
-    if user do
-      {:ok, assign(socket, :user, user)}
-    else
-      {:error, %{reason: "User not found"}}
+  def connect(%{"token" => token, "room_id" => room_id}, socket) do
+
+    # Verify token to get back User ID
+    # Set max_age: to two weeks
+    case Phoenix.Token.verify(socket, "user", token, max_age: 1209600) do
+      {:ok, user_id} ->
+        room = Repo.get(ChattingRoom, room_id)
+        IO.puts List.duplicate("*", 100) |> Enum.join
+        IO.inspect room.name
+        IO.puts List.duplicate("*", 100) |> Enum.join
+        if room do
+          user = Repo.get(User, user_id)
+
+          if user do
+            {:ok, socket |> assign(:user, user) |> assign(:room, room)}
+          else
+            {:error, %{reason: "user not found"}}
+          end
+        else
+          {:error, %{reason: "room not found"}}
+        end
+
+      {:error, _} ->
+        {:error, %{reason: "Token verification failed"}}
     end
+
+    # user = Repo.get(User, user_id)
+    # if user do
+    #   {:ok, assign(socket, :user, user)}
+    # else
+    #   {:error, %{reason: "User not found"}}
+    # end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
@@ -41,5 +66,10 @@ defmodule Rumbl.UserSocket do
   #     Rumbl.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(_socket), do: nil
+  def id(socket) do
+    IO.puts List.duplicate("*", 100) |> Enum.join()
+    IO.inspect socket
+    IO.puts List.duplicate("*", 100) |> Enum.join()
+    nil
+  end
 end

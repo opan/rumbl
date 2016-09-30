@@ -1,15 +1,34 @@
-<%= hidden_input :user, :id, value: @user.id %>
+<%= hidden_input :user, :id, value: Phoenix.Token.sign(@conn, "user", @user.id ) %>
+<%= hidden_input :room, :id, value: @room.id %>
 
 <div class="row">
   <div class="col-md-4">
     <%= link "Main Page", to: page_path(@conn, :index) %>
+    |
+    <%= link "Back to Chat Room", to: page_path(@conn, :rooms) %>
   </div>
 </div>
+
+<h2 class="page-header">
+  <p class="lead">
+    Welcome to Chat Room
+  </p>
+  <%= @room.name %>
+</h2>
 
 <div class="row">
   <div class="col-md-8">
     <h3 class="page-header">Messages</h3>
     <ul id="message_list" class="list-unstyled">
+      <%= for chat <- @chats do %>
+        <li>
+          <b><%= chat.user.name %></b>
+          <i><%= chat.inserted_at %></i>
+          <p>
+            <%= chat.message %>
+          </p>
+        </li>
+      <% end %>
     </ul>
     <%= text_input :user, :new_message, placeholder: "Type here and press enter to send", class: "form-control" %>
   </div>

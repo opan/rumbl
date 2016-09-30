@@ -22,10 +22,10 @@ defmodule Rumbl.SinorangChannel do
       timestamp: :os.system_time(:milli_seconds)
     }
 
-    Chatting.changeset(%Chatting{
+    Ecto.build_assoc(socket.assigns.room, :chattings,
       user_id: socket.assigns.user.id,
       message: message
-    })
+    )
       |> Repo.insert!()
 
 
