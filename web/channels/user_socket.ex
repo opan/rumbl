@@ -29,9 +29,7 @@ defmodule Rumbl.UserSocket do
     case Phoenix.Token.verify(socket, "user", token, max_age: 1209600) do
       {:ok, user_id} ->
         room = Repo.get(ChattingRoom, room_id)
-        IO.puts List.duplicate("*", 100) |> Enum.join
-        IO.inspect room.name
-        IO.puts List.duplicate("*", 100) |> Enum.join
+
         if room do
           user = Repo.get(User, user_id)
 
@@ -67,9 +65,6 @@ defmodule Rumbl.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   def id(socket) do
-    IO.puts List.duplicate("*", 100) |> Enum.join()
-    IO.inspect socket
-    IO.puts List.duplicate("*", 100) |> Enum.join()
-    nil
+    "sinorang:#{socket.assigns.room.id}"
   end
 end

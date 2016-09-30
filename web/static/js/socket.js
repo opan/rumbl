@@ -84,7 +84,8 @@ let mainFunction = ()=> {
   let listBy = (user, {metas: metas}) => {
     return {
       user: user,
-      onlineAt: formatTimestamp(metas[0].online_at)
+      onlineAt: formatTimestamp(metas[0].online_at),
+      room: metas[0].room
     }
   }
 
@@ -96,12 +97,13 @@ let mainFunction = ()=> {
           ${presence.user}
           <br>
           <small>onine since ${presence.onlineAt}</small>
+          <small><b>at ${presence.room}</b></small>
         </li>
       `)
       .join("")
   }
 
-  let channel = socket.channel("sinorang:main", {});
+  let channel = socket.channel(`sinorang:${roomID}`, {token: userToken});
   let messageInput = document.getElementById('user_new_message')
   messageInput.addEventListener("keypress", (e)=> {
     if (e.keyCode == 13 && messageInput.value != ""){
