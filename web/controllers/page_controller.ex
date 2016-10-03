@@ -26,9 +26,4 @@ defmodule Rumbl.PageController do
       |> redirect(to: page_path(conn, :rooms))
     end
   end
-
-  def rooms(conn, _params) do
-    rooms = Repo.all ChattingRoom
-    render conn, "rooms.html", rooms: rooms
-  end
 end

@@ -1,7 +1,9 @@
 <div class="well">
-  <%= link "Chat Room", to: page_path(@conn, :rooms) %>
+  <%= link "Chat Room", to: chatting_room_path(@conn, :index) %>
   |
   <%= link "List Users", to: user_path(@conn, :index) %>
+  |
+  <%= link "Setup Chatting Room", to: chatting_room_path(@conn, :index) %>
 </div>
 
 <div class="jumbotron">
