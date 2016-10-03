@@ -1,4 +1,4 @@
-<h1>Chatting Room User List</h1>
+<h1>Chatting Rooms</h1>
 
 <div class="well">
   <%= link "Back to Main Page", to: page_path(@conn, :index) %>
@@ -25,7 +25,7 @@
           <%= link "Delete", to: chatting_room_path(@conn, :delete, room), method: :delete,
             data: [confirm: "Delete this Room? This will delete all chat in this room"], class: "btn btn-danger btn-xs"
           %> |
-
+          <%= link "Setup User", to: chatting_room_chatting_room_user_path(@conn, :index, room), class: "btn btn-info btn-xs" %>
         </td>
         <td>
           <%= link "Join Chat", to: page_path(@conn, :chat, room.id) %>

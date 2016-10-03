@@ -1,0 +1,38 @@
+<h1>List of Users on Chatting Room <%= @room.name %></h1>
+
+<div class="well">
+  <%= link "Back", to: chatting_room_path(@conn, :index) %>
+  |
+  <%= link "Add User", to: chatting_room_chatting_room_user_path(@conn, :new, @room) %>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>User name</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= if @room_users == [] do %>
+      <tr>
+        <td class="text-center" colspan="2">
+          There is no user to display
+        </td>
+      </tr>
+    <% end %>
+
+    <%= for ru <- @room_users do %>
+      <tr>
+        <td>
+          <%= ru.user.name %>
+        </td>
+        <td>
+          <%= link "Delete", to: chatting_room_chatting_room_user_path(@conn, :delete, @room, ru),
+            method: :delete, data: [confirm: "Delete this User from this Room?"] %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

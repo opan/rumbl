@@ -22,7 +22,9 @@ defmodule Rumbl.Router do
     resources "/users", UserController, only: [:index, :new, :create, :show, :delete]
     resources "/sessions", SessionController, only: [:new, :create, :delete]
     resources "/videos", VideoController
-    resources "/chatting_rooms/", ChattingRoomController
+    resources "/chatting_rooms/", ChattingRoomController do
+      resources "/users", ChattingRoomUserController, only: [:index, :delete, :new, :create] 
+    end
   end
 
   scope "/manage", Rumbl do

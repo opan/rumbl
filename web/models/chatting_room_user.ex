@@ -13,8 +13,10 @@ defmodule Rumbl.ChattingRoomUser do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [])
+    |> cast(params, [:user_id, :chatting_room_id])
     |> validate_required([:user_id, :chatting_room_id])
+    # |> unique_constraint(:user_id, name: :chatting_room_users_user_id_index)
+    |> unique_constraint(:user_id, name: :user_chatting_room_unique_index)
     |> assoc_constraint(:user)
     |> assoc_constraint(:chatting_room)
   end

@@ -29,6 +29,10 @@ defmodule Rumbl.User do
     |> unique_constraint(:username)
   end
 
+  def names_and_ids(query) do
+    from u in query, select: {u.username, u.id}
+  end
+
   defp put_pass_hash(changeset) do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->

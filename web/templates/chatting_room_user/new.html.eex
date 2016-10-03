@@ -1,0 +1,32 @@
+<h1>New User on Chatting Room <%= @room.name %></h1>
+
+<div class="well">
+  <%= link "Back", to: chatting_room_chatting_room_user_path(@conn, :index, @room) %>
+</div>
+
+<%= if @changeset.action do %>
+  <div class="alert alert-danger">
+    <p>
+      Oops, something went wrong! Please check the error below!
+    </p>
+  </div>
+<% end %>
+
+<%= form_for @changeset, chatting_room_chatting_room_user_path(@conn, :create, @room), fn f -> %>
+  <div class="form-group">
+    <%= label f, :user_id, class: "control-label"%>
+    <%= select f, :user_id, @users, class: "form-control", prompt: "Choose user" %>
+    <%= error_tag f, :user_id %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :chatting_room_id, class: "control-label" %>
+    <%= text_input f, :chatting_room, class: "form-control", value: @room.name, disabled: true %>
+    <%= hidden_input f, :chatting_room_id %>
+    <%= error_tag f, :chatting_user_id %>
+  </div>
+
+  <div class="form-group">
+    <%= submit "Submit", class: "btn btn-primary" %>
+  </div>
+<% end %>
