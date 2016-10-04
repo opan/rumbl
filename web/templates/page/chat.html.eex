@@ -5,7 +5,7 @@
   <div class="col-md-4">
     <%= link "Main Page", to: page_path(@conn, :index) %>
     |
-    <%= link "Back to Chat Room", to: page_path(@conn, :rooms) %>
+    <%= link "Back to Chat Room", to: chatting_room_path(@conn, :index) %>
   </div>
 </div>
 

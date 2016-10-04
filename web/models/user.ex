@@ -8,6 +8,7 @@ defmodule Rumbl.User do
     field :password_hash, :string
     has_many :videos, Rumbl.Video, on_delete: :delete_all
     has_many :chattings, Rumbl.Chatting, on_delete: :delete_all
+    has_many :chatting_room_users, Rumbl.ChattingRoomUser, on_delete: :delete_all
     many_to_many :chatting_rooms, Rumbl.ChattingRoom, join_through: "chatting_room_users"
 
     timestamps
