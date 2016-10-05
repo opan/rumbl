@@ -223,7 +223,6 @@ let discussionVoteFunction =  ()=> {
       `)
     })
 
-    console.log(tbodyContent.join(""));
     document.getElementById("discusion_votings_content").innerHTML = `
       <tbody>
         ${tbodyContent.join("")}
