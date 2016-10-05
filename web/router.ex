@@ -5,9 +5,12 @@ defmodule Rumbl.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
-    plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug Rumbl.Auth, repo: Rumbl.Repo
+  end
+
+  pipeline :csrf do
+    plug :protect_from_forgery
   end
 
   pipeline :api do
@@ -15,7 +18,7 @@ defmodule Rumbl.Router do
   end
 
   scope "/", Rumbl do
-    pipe_through :browser # Use the default browser stack
+    pipe_through [:browser, :csrf] # Use the default browser stack
 
     get "/", PageController, :index
     get "/chat/:room_id", PageController, :chat
@@ -23,12 +26,22 @@ defmodule Rumbl.Router do
     resources "/sessions", SessionController, only: [:new, :create, :delete]
     resources "/videos", VideoController
     resources "/chatting_rooms/", ChattingRoomController do
-      resources "/users", ChattingRoomUserController, only: [:index, :delete, :new, :create] 
+      resources "/users", ChattingRoomUserController, only: [:index, :delete, :new, :create]
     end
+
+    get "/discussions", DiscussionController, :index
+    get "/discussions/:id/votings", DiscussionController, :votings
+  end
+
+  scope "/", Rumbl do
+    pipe_through [:browser]
+    
+    put "/discussions/:id/votings/:polling_id/upvote", DiscussionController, :upvote
+    put "/discussions/:id/votings/:polling_id/downvote", DiscussionController, :downvote
   end
 
   scope "/manage", Rumbl do
-    pipe_through [:browser, :authenticate_user]
+    pipe_through [:browser, :authenticate_user, :csrf]
 
     resources "/videos", VideoController
   end

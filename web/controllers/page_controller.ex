@@ -19,7 +19,8 @@ defmodule Rumbl.PageController do
 
       # Find all Chatting history based on Chatting Room
       chats = Repo.all from c in Chatting, preload: [:user],
-        where: c.chatting_room_id == ^room.id
+        where: c.chatting_room_id == ^room.id and c.type == "plain"
+        
       render conn, "chat.html", user: user, room: room, chats: chats
     else
       conn

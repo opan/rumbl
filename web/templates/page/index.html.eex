@@ -2,6 +2,8 @@
   <%= link "Chat Room", to: chatting_room_path(@conn, :index) %>
   |
   <%= link "List Users", to: user_path(@conn, :index) %>
+  |
+  <%= link "Discussion", to: discussion_path(@conn, :index) %>
 </div>
 
 <div class="jumbotron">

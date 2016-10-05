@@ -1,0 +1,87 @@
+<%= hidden_input :user, :id, value: Phoenix.Token.sign(@conn, "user", @conn.assigns.current_user.id ) %>
+<%= hidden_input :subtopic, :id, value: @discussion.id %>
+<%= hidden_input :chat, :type, value: "discussion_vote_chat" %>
+
+<h1>Discuss Topic: <%= @discussion.title %></h1>
+
+<div class="well">
+  <%= link "Back to list", to: discussion_path(@conn, :index) %>
+</div>
+
+<!-- <div class="form-horizontal">
+  <div class="form-group">
+    <%= label :f, :title, "Title Vote", class: "control-label col-md-4" %>
+    <%= label :f, :score, "Score", class: "control-label col-md-4" %>
+  </div>
+  <hr>
+  <%= for d <- @dis_votings do %>
+    <div class="form-group">
+      <%= label :f, String.to_atom("label-#{d.id}"), d.title, class: "control-label col-md-4" %>
+      <%= label :f, String.to_atom("label-#{d.id}"), to_string(d.score), class: "control-label col-md-4" %>
+    </div>
+
+  <% end %>
+</div> -->
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th class="text-center">
+        Voting Option
+      </th>
+      <th class="text-center">
+        Score
+      </th>
+      <th>Upvote / Downvote</th>
+    </tr>
+  </thead>
+
+  <tbody id="discusion_votings_content">
+    <%= for d <- @dis_votings do %>
+      <tr>
+        <td class="text-center">
+          <b><%= d.title %></b>
+        </td>
+        <td class="text-center">
+          <%= d.score %>
+        </td>
+        <td>
+          <%= link to: discussion_path(@conn, :upvote, @discussion, d), class: "btn btn-xs btn-primary", data: [vote_btn: true] do %>
+            Upvote
+            <!-- <span class="glyphicon glyphicon-chevron-up"></span> -->
+          <% end %>
+          |
+          <%= link to: discussion_path(@conn, :downvote, @discussion, d), class: "btn btn-xs btn-danger", data: [vote_btn: true] do %>
+            Downvote
+            <!-- <span class="glyphicon glyphicon-chevron-up"></span> -->
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h4 class="page-header">Discussion Chat</h4>
+
+<div class="row">
+  <div class="col-md-8">
+    <h3 class="page-header">Messages</h3>
+    <ul id="message_list" class="list-unstyled">
+      <%= for chat <- @chats do %>
+        <li>
+          <b><%= chat.user.name %></b>
+          <i><%= chat.inserted_at %></i>
+          <p>
+            <%= chat.message %>
+          </p>
+        </li>
+      <% end %>
+    </ul>
+    <%= text_input :user, :new_message, placeholder: "Type here and press enter to send", class: "form-control" %>
+  </div>
+  <div class="col-md-4">
+    <h3 class="page-header">Online Users</h3>
+    <ul id="user_list" class="list-unstyled">
+      <li>Loading online users...</li>
+    </ul>
+  </div>
+</div>

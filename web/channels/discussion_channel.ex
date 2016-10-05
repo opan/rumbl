@@ -1,8 +1,8 @@
-defmodule Rumbl.SinorangChannel do
+defmodule Rumbl.DiscussionChannel do
   use Phoenix.Channel
-  alias Rumbl.{Presence, Chatting, Repo}
+  alias Rumbl.{Repo, Chatting, DiscussionVoting, Presence}
 
-  def join("sinorang:" <> room_id, %{"token" => token}, socket) do
+  def join("discussion:" <> discussion_id, %{"token" => token}, socket) do
     case Phoenix.Token.verify(socket, "user", token, max_age: 1209600) do
       {:ok, user_id} ->
         send self(), :after_join
@@ -15,7 +15,7 @@ defmodule Rumbl.SinorangChannel do
   def handle_info(:after_join, socket) do
     Presence.track(socket, socket.assigns.user.name, %{
       online_at: :os.system_time(:milli_seconds),
-      room: socket.assigns.room.name
+      discussion_name: socket.assigns.discussion.title
     })
     push socket, "presence_state", Presence.list(socket)
     {:noreply, socket}
@@ -28,7 +28,7 @@ defmodule Rumbl.SinorangChannel do
       timestamp: :os.system_time(:milli_seconds)
     }
 
-    Ecto.build_assoc(socket.assigns.room, :chattings,
+    Ecto.build_assoc(socket.assigns.discussion, :chattings,
       user_id: socket.assigns.user.id,
       message: message,
       type: socket.assigns.chat_type

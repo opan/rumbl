@@ -1,0 +1,23 @@
+<h1>Discussions Lists</h1>
+
+<div class="well">
+  <%= link "Back to main page", to: page_path(@conn, :index) %>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= for d <- @discussions do %>
+      <tr>
+        <td><%= d.title %></td>
+        <td><%= link "Discuss", to: discussion_path(@conn, :votings, d) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

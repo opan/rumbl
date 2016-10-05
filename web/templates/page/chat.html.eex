@@ -1,5 +1,6 @@
 <%= hidden_input :user, :id, value: Phoenix.Token.sign(@conn, "user", @user.id ) %>
-<%= hidden_input :room, :id, value: @room.id %>
+<%= hidden_input :subtopic, :id, value: @room.id %>
+<%= hidden_input :chat, :type, value: "plain_chat" %>
 
 <div class="row">
   <div class="col-md-4">

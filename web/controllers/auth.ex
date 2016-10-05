@@ -62,7 +62,6 @@ defmodule Rumbl.Auth do
   end
 
   def authorization_user(conn, _opts) do
-    IO.inspect conn
     conn
   end
 end

@@ -7,20 +7,31 @@ import {Socket, Presence} from "phoenix"
 
 
 let userToken = document.getElementById('user_id')
-let roomID = document.getElementById('room_id')
+let subtopicId = document.getElementById('subtopic_id')
+let chatType = document.getElementById('chat_type')
 
-if (userToken) {
-  userToken = userToken.value
-  roomID = roomID.value
-} else {
-  userToken = null
-  roomID = null
-}
+userToken = (userToken) ? userToken.value : null
+subtopicId = (subtopicId) ? subtopicId.value : null
+chatType = (chatType) ? chatType.value : null
 
 // let socket = new Socket("/socket", {params: {user: "opan"}})
-let socket = new Socket("/socket", {params: {token: userToken, room_id: roomID}})
+let socket = new Socket("/socket", {
+    params: {
+      token: userToken, subtopic_id: subtopicId, chat_type: chatType
+    }
+  }
+)
 
-let mainFunction = ()=> {
+let formatTimestamp = (timestamp) => {
+  let date = new Date(timestamp)
+  return date.toLocaleTimeString()
+}
+
+let presences = {}
+
+let userList = document.getElementById('user_list')
+
+let plainChatFunction = ()=> {
 
   // When you connect, you'll often need to authenticate the client.
   // For example, imagine you have an authentication plug, `MyAuth`,
@@ -74,39 +85,11 @@ let mainFunction = ()=> {
   //   .receive("ok", resp => { console.log("Joined successfully", resp) })
   //   .receive("error", resp => { console.log("Unable to join", resp) })
 
-  let presences = {}
-
-  let formatTimestamp = (timestamp) => {
-    let date = new Date(timestamp)
-    return date.toLocaleTimeString()
-  }
-
-  let listBy = (user, {metas: metas}) => {
-    return {
-      user: user,
-      onlineAt: formatTimestamp(metas[0].online_at),
-      room: metas[0].room
-    }
-  }
-
-  let userList = document.getElementById('user_list')
-  let render = (presences) => {
-    userList.innerHTML = Presence.list(presences, listBy)
-      .map(presence => `
-        <li>
-          ${presence.user}
-          <br>
-          <small>onine since ${presence.onlineAt}</small>
-          <small><b>at ${presence.room}</b></small>
-        </li>
-      `)
-      .join("")
-  }
-
-  let channel = socket.channel(`sinorang:${roomID}`, {token: userToken});
+  let channel = socket.channel(`sinorang:${subtopicId}`, {token: userToken});
   let messageInput = document.getElementById('user_new_message')
   messageInput.addEventListener("keypress", (e)=> {
     if (e.keyCode == 13 && messageInput.value != ""){
+      // channel.push() can send an object as parameters
       channel.push("message:new", messageInput.value)
       messageInput.value = ""
     }
@@ -123,6 +106,27 @@ let mainFunction = ()=> {
     messageList.appendChild(messageElement)
     messageList.scrollTop = messageList.scrollHeight
 
+  }
+
+  let listBy = (user, {metas: metas}) => {
+    return {
+      user: user,
+      onlineAt: formatTimestamp(metas[0].online_at),
+      room: metas[0].room
+    }
+  }
+
+  let render = (presences) => {
+    userList.innerHTML = Presence.list(presences, listBy)
+      .map(presence => `
+        <li>
+          ${presence.user}
+          <br>
+          <small>onine since ${presence.onlineAt}</small>
+          <small><b>at ${presence.room}</b></small>
+        </li>
+      `)
+      .join("")
   }
 
   channel.on("message:new", message => renderMessage(message))
@@ -142,9 +146,81 @@ let mainFunction = ()=> {
     .receive("error", resp => { console.log("Unable to join", resp) })
 }
 
-// Run socket only if userToken exists
-if (userToken){
-  mainFunction()
+
+let discussionVoteFunction =  ()=> {
+
+  socket.connect();
+  let channel = socket.channel(`discussion:${subtopicId}`, {token: userToken});
+
+  let messageInput = document.getElementById('user_new_message')
+  messageInput.addEventListener("keypress", (e)=> {
+    if (e.keyCode == 13 && messageInput.value != ""){
+      // channel.push() can send an object as parameters
+      channel.push("message:new", messageInput.value)
+      messageInput.value = ""
+    }
+  })
+
+  let messageList = document.getElementById('message_list')
+  let renderMessage = (message) => {
+    let messageElement = document.createElement("li")
+    messageElement.innerHTML = `
+      <b>${message.user}</b>
+      <i>${formatTimestamp(message.timestamp)}</i>
+      <p>${message.body}</p>
+    `
+    messageList.appendChild(messageElement)
+    messageList.scrollTop = messageList.scrollHeight
+
+  }
+
+  let render = (presences) => {
+    userList.innerHTML = Presence.list(presences, listBy)
+      .map(presence => `
+        <li>
+          ${presence.user}
+          <br>
+          <small>onine since ${presence.onlineAt}</small>
+          <small><b>at ${presence.discussion}</b></small>
+        </li>
+      `)
+      .join("")
+  }
+
+  let listBy = (user, {metas: metas}) => {
+    return {
+      user: user,
+      onlineAt: formatTimestamp(metas[0].online_at),
+      discussion: metas[0].discussion_name
+    }
+  }
+
+  channel.on("message:new", message => renderMessage(message))
+  channel.on("polling:vote", payload => {
+    console.log(payload)
+  })
+
+  channel.on("presence_state", state => {
+    presences = Presence.syncState(presences, state)
+    render(presences)
+  })
+
+  channel.on("presence_diff", diff => {
+    presences = Presence.syncDiff(presences, diff)
+    render(presences)
+  })
+
+  channel.join()
+    .receive("ok", resp => { console.log("Joined successfully", resp) })
+    .receive("error", resp => { console.log("Unable to join", resp) })
 }
+
+if (chatType == "plain_chat"){
+  plainChatFunction()
+} else if (chatType == "discussion_vote_chat") {
+  discussionVoteFunction()
+}
+
+
 
 export default socket

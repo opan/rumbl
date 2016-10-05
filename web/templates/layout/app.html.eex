@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
-  <body>
+  <body data-cont="ac-<%= @conn.private.phoenix_action %> <%= @conn.private.phoenix_controller %>">
     <div class="container">
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
@@ -35,9 +35,6 @@
       </main>
 
     </div> <!-- /container -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> -->
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
-
-    </script>
   </body>
 </html>
