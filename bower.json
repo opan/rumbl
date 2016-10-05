@@ -1,0 +1,20 @@
+{
+  "name": "rumbl",
+  "description": "",
+  "main": "",
+  "authors": [
+    "opanmustopah <opan.neutron@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/opan/rumbl",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.1.1"
+  }
+}

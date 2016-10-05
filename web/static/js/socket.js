@@ -196,8 +196,40 @@ let discussionVoteFunction =  ()=> {
   }
 
   channel.on("message:new", message => renderMessage(message))
+
   channel.on("polling:vote", payload => {
-    console.log(payload)
+    let tbodyContent = []
+    payload.discussion_votings.forEach((vote)=>{
+      tbodyContent.push(`
+      <tr>
+        <td class="text-center">
+          <b>${vote.title}</b>
+        </td>
+        <td class="text-center">
+          ${vote.score}
+        </td>
+        <td>
+          <a href="/discussions/${payload.discussion.id}/votings/${vote.id}/upvote" class="btn btn-xs btn-primary"
+            data-vote-btn="true">
+            Upvote
+          </a>
+          |
+          <a href="/discussions/${payload.discussion.id}/votings/${vote.id}/downvote" class="btn btn-xs btn-danger"
+            data-vote-btn="true">
+            Downvote
+          </a>
+        </td>
+      </tr>
+      `)
+    })
+
+    console.log(tbodyContent.join(""));
+    document.getElementById("discusion_votings_content").innerHTML = `
+      <tbody>
+        ${tbodyContent.join("")}
+      </tbody>
+    `
+
   })
 
   channel.on("presence_state", state => {

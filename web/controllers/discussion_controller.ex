@@ -37,13 +37,31 @@ defmodule Rumbl.DiscussionController do
     DiscussionVoting.changeset(polling, %{score: (polling.score - 1)})
       |> Repo.update!()
 
+    update_polling_table(id)
+
     render conn, "downvote.json", message: "OK"
   end
 
   defp update_polling_table(discussion_id) do
     discussion = Repo.get(Discussion, discussion_id)
-    Rumbl.Endpoint.broadcast("discussion:#{discussion_id}", "polling:vote", %{
-      discussion: discussion
-    })
+    discussion_votings = Repo.all from v in DiscussionVoting,
+      where: v.discussion_id == ^discussion.id,
+      order_by: [desc: v.score]
+
+    payload = %{
+      discussion: %{
+        id: discussion.id,
+        title: discussion.title
+      },
+      discussion_votings: Enum.map(discussion_votings, fn(voting) ->
+        %{
+          id: voting.id,
+          title: voting.title,
+          score: voting.score
+        }
+      end)
+    }
+
+    Rumbl.Endpoint.broadcast("discussion:#{discussion_id}", "polling:vote", payload)
   end
 end

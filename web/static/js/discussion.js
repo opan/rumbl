@@ -13,7 +13,6 @@ let discussions = {
         })
 
         promise.done((data)=>{
-          console.log(data)
         })
 
         promise.fail((error, xhr, status)=>{
