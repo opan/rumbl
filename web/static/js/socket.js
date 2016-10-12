@@ -22,6 +22,17 @@ let socket = new Socket("/socket", {
   }
 )
 
+let global_socket = new Socket("/global_socket", {
+  params: {}
+})
+global_socket.connect();
+let global_channel = global_socket.channel(`global:1`, {})
+console.log("lewat");
+
+global_channel.join()
+  .receive("ok", resp => { console.log("sukses", resp)})
+  .receive("error", resp => { console.log("error", resp)})
+
 let formatTimestamp = (timestamp) => {
   let date = new Date(timestamp)
   return date.toLocaleTimeString()
@@ -141,6 +152,10 @@ let plainChatFunction = ()=> {
     render(presences)
   })
 
+  channel.on("push_notifications", payload => {
+    alert(payload.message)
+  })
+
   channel.join()
     .receive("ok", resp => { console.log("Joined successfully", resp) })
     .receive("error", resp => { console.log("Unable to join", resp) })
@@ -241,6 +256,10 @@ let discussionVoteFunction =  ()=> {
     render(presences)
   })
 
+  channel.on("push_notifications", payload => {
+    alert(payload.message)
+  })
+
   channel.join()
     .receive("ok", resp => { console.log("Joined successfully", resp) })
     .receive("error", resp => { console.log("Unable to join", resp) })
@@ -251,7 +270,5 @@ if (chatType == "plain_chat"){
 } else if (chatType == "discussion_vote_chat") {
   discussionVoteFunction()
 }
-
-
 
 export default socket

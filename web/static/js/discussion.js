@@ -1,3 +1,5 @@
+import socket from "./socket"
+
 let discussions = {
   init: ()=> {
     if ($('[data-cont="ac-votings Elixir.Rumbl.DiscussionController"]').length > 0) discussions.votings()
@@ -19,6 +21,19 @@ let discussions = {
           console.log(error)
         })
       })
+      .on("click", "#test_blast", (e)=>{
+        e.preventDefault()
+        let url = $(e.target).attr("href");
+        let promise = $.ajax({
+          url: url,
+          method: "GET"
+        })
+
+        promise.done((data)=>{
+          console.log(data)
+        })
+      })
+
   }
 }
 

@@ -42,6 +42,16 @@ defmodule Rumbl.DiscussionController do
     render conn, "downvote.json", message: "OK"
   end
 
+  def blast(conn, _params) do
+    discussions = Repo.all Discussion
+
+    Enum.map(discussions, fn (x) ->
+      Rumbl.Endpoint.broadcast("discussion:#{x.id}", "push_notifications", %{message: "broadcast coooyt!!"})
+    end)
+
+    render conn, "blast.json"
+  end
+
   defp update_polling_table(discussion_id) do
     discussion = Repo.get(Discussion, discussion_id)
     discussion_votings = Repo.all from v in DiscussionVoting,

@@ -10,4 +10,8 @@ defmodule Rumbl.DiscussionView do
   def render("downvote.json", %{message: message}) do
     %{message: message}
   end
+
+  def render("blast.json", %{}) do
+    %{message: "response blast"}
+  end
 end

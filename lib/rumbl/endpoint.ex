@@ -2,6 +2,7 @@ defmodule Rumbl.Endpoint do
   use Phoenix.Endpoint, otp_app: :rumbl
 
   socket "/socket", Rumbl.UserSocket
+  socket "/global_socket", Rumbl.GlobalSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #

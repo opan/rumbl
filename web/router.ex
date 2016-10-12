@@ -35,9 +35,10 @@ defmodule Rumbl.Router do
 
   scope "/", Rumbl do
     pipe_through [:browser]
-    
+
     put "/discussions/:id/votings/:polling_id/upvote", DiscussionController, :upvote
     put "/discussions/:id/votings/:polling_id/downvote", DiscussionController, :downvote
+    get "/discussions/blast", DiscussionController, :blast
   end
 
   scope "/manage", Rumbl do

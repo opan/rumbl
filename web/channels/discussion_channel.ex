@@ -3,6 +3,7 @@ defmodule Rumbl.DiscussionChannel do
   alias Rumbl.{Repo, Chatting, DiscussionVoting, Presence}
 
   def join("discussion:" <> discussion_id, %{"token" => token}, socket) do
+    List.duplicate("*", 100) |> Enum.join |> IO.puts
     case Phoenix.Token.verify(socket, "user", token, max_age: 1209600) do
       {:ok, user_id} ->
         send self(), :after_join

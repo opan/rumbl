@@ -6,6 +6,8 @@
 
 <div class="well">
   <%= link "Back to list", to: discussion_path(@conn, :index) %>
+  |
+  <%= link "Test blast to all", to: discussion_path(@conn, :blast), id: "test_blast" %>
 </div>
 
 <!-- <div class="form-horizontal">
